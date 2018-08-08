@@ -1,10 +1,11 @@
 package com.example.bohdan.gurdiannavigationview;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Response {
+public class Response implements Serializable {
 
     @SerializedName("status")
     @Expose

@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity
     NetworkManager networkManager = new NetworkManager();
     FragmentA fragmentA = new FragmentA();
     FragmentD fragmentD = new FragmentD();
+    Model model;
+    String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +52,25 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //loadFragment();
+        try {
+            loadFragment();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
-   /* public void loadFragment(){
-        android.app.FragmentManager fm = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.appbar_base, fragmentA);
+    public void loadFragment() throws InterruptedException {
+        s = "tennis";
+        model = getModelNetworkManagerToFragment(s);
+        android.support.v4.app.Fragment fragment = null;
+        fragment = FragmentA.newInstanceModel(model);
+
+        FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.appbar_base, fragment);
         fragmentTransaction.commit();
-    }*/
+    }
 
     @Override
     public void onBackPressed() {
@@ -96,29 +107,50 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         android.support.v4.app.Fragment fragment = null;
-        Class fragmentClass = null;
 
+        switch (id){
+            case R.id.nav_camera:
+                s = "football";
+                try {
+                    model = getModelNetworkManagerToFragment(s);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-            fragmentClass = FragmentA.class;
-            String s = "football";
-            try {
-                callingBack(s);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            getSupportActionBar().setTitle("Football");
-        } else if (id == R.id.nav_gallery) {
-            fragmentClass = FragmentB.class;
-            getSupportActionBar().setTitle("Business");
+                fragment = FragmentA.newInstanceModel(model);
+                getSupportActionBar().setTitle("Football");
+                break;
 
+            case R.id.nav_gallery:
+                s = "business";
+                try {
+                    model = getModelNetworkManagerToFragment(s);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                fragment = FragmentA.newInstanceModel(model);
+                getSupportActionBar().setTitle("Business");
+                break;
+
+            case R.id.nav_slideshow:
+                s = "world news";
+                try {
+                    model = getModelNetworkManagerToFragment(s);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                fragment = FragmentA.newInstanceModel(model);
+                getSupportActionBar().setTitle("Tennis");
+                break;
         }
-       /* } else if (id == R.id.nav_slideshow) {
+
+
+         /*else if (id == R.id.nav_slideshow){} {
 
         } else if (id == R.id.nav_manage) {
 
@@ -128,16 +160,8 @@ public class MainActivity extends AppCompatActivity
 
         }*/
 
-        try {
-            fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.appbar_base, fragment).commit();
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -147,7 +171,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Model callingBack(String string) throws InterruptedException {
         networkManager.loadStringFromMain(string);
-
         return networkManager.model;
     }
 
@@ -167,5 +190,10 @@ public class MainActivity extends AppCompatActivity
     public void callingBackButton() {
         android.app.FragmentManager fm = getFragmentManager();
         fm.popBackStack();
+    }
+
+    public Model getModelNetworkManagerToFragment(String s) throws InterruptedException {
+        networkManager.loadStringFromMain(s);
+        return networkManager.model;
     }
 }

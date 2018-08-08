@@ -1,6 +1,7 @@
 package com.example.bohdan.gurdiannavigationview;
 
 
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,15 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.bohdan.gurdiannavigationview.databinding.RecyclerListItemBinding;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.PersonalViewHolder>  {
 
-
     public List<Result> results;
-
     public RecyclerViewAdapter(List<Result> results) {
         this.results = results;
     }
@@ -26,21 +26,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public PersonalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_list_item, parent, false);
-        PersonalViewHolder pvh = new PersonalViewHolder(v);
 
+        RecyclerListItemBinding recyclerListItemBinding = DataBindingUtil.
+                inflate(LayoutInflater.from(parent.getContext()),R.layout.recycler_list_item,parent,false);
+
+        //View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_list_item, parent, false);
+        PersonalViewHolder pvh = new PersonalViewHolder(recyclerListItemBinding);
         return pvh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull PersonalViewHolder holder, int position) {
-        holder.textView.setText(results.get(position).getSectionName());
+        holder.recyclerListItemBinding.setModelFor(results.get(position));
+        /*  holder.textView.setText(results.get(position).getSectionName());
         holder.textView2.setText(results.get(position).getWebTitle());
         Picasso.get()
                 .load(results.get(position).getFields().getThumbnail())
-                .into(holder.imageView);
+                .into(holder.imageView);*/
     }
-
 
     @Override
     public int getItemCount() {
@@ -52,21 +55,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class PersonalViewHolder extends RecyclerView.ViewHolder{
 
-        CardView cardView;
+        /*CardView cardView;
         TextView textView;
         TextView textView2;
-        ImageView imageView;
+        ImageView imageView;*/
 
+        public RecyclerListItemBinding recyclerListItemBinding;
 
-
-        public PersonalViewHolder(View itemView) {
+        public PersonalViewHolder(RecyclerListItemBinding recyclerListItemBinding) {
+            super(recyclerListItemBinding.getRoot());
+            this.recyclerListItemBinding = recyclerListItemBinding;
+        }
+        /*public PersonalViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardviewNew);
             textView = itemView.findViewById(R.id.textView);
             textView2 = itemView.findViewById(R.id.textView2);
             imageView = itemView.findViewById(R.id.imageView);
-        }
+        }*/
     }
-
-
 }
